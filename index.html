@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sewing Mojo Reset</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #1F2ADE;
+    --pink: #FCB8D9;
+    --emerald: #00DF82;
+    --tangerine: #FF4400;
+    --lilac: #FEE1F7;
+    --bg: #FAF9F7;
+    --text: #1a1a1a;
+    --text-mid: #444;
+    --text-light: #777;
+    --card-bg: #fff;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Quicksand', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px 64px;
+  }
+
+  /* HEADER */
+  .site-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .site-header .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 28px;
+  }
+
+  .logo-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--tangerine);
+  }
+
+  /* SCREENS */
+  .screen { display: none; width: 100%; max-width: 640px; }
+  .screen.active { display: block; }
+
+  /* STEP 1 — STATE SELECTION */
+  .screen-title {
+    font-size: clamp(26px, 5vw, 38px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+
+  .screen-sub {
+    font-size: 16px;
+    color: var(--text-mid);
+    margin-bottom: 32px;
+    font-weight: 500;
+  }
+
+  .state-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .state-btn {
+    background: var(--card-bg);
+    border: 2px solid #e0ddd8;
+    border-radius: 40px;
+    padding: 10px 20px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.18s ease;
+    line-height: 1.3;
+  }
+
+  .state-btn:hover {
+    border-color: var(--blue);
+    background: var(--lilac);
+    color: var(--blue);
+    transform: translateY(-1px);
+  }
+
+  .state-btn.selected {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+  }
+
+  /* PATTERN TRACKER */
+  .pattern-notice {
+    margin-top: 28px;
+    background: var(--lilac);
+    border-left: 4px solid var(--blue);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--blue);
+    display: none;
+  }
+
+  /* STEP 2 — CARD SCREEN */
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+
+  .card-state-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
+
+  .redraw-info {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-light);
+  }
+
+  /* RESET CARD */
+  .reset-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 32px;
+    box-shadow: 0 4px 24px rgba(31,42,222,0.08), 0 1px 4px rgba(0,0,0,0.06);
+    margin-bottom: 24px;
+    animation: cardDeal 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+    border-top: 4px solid var(--blue);
+  }
+
+  @keyframes cardDeal {
+    from { opacity: 0; transform: translateY(18px) rotate(-1deg); }
+    to   { opacity: 1; transform: translateY(0) rotate(0deg); }
+  }
+
+  .card-section {
+    margin-bottom: 22px;
+  }
+
+  .card-section:last-child { margin-bottom: 0; }
+
+  .card-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .label-pattern { color: var(--tangerine); }
+  .label-reality { color: var(--blue); }
+  .label-do      { color: #1a7a40; }
+  .label-not     { color: #b03000; }
+  .label-reframe { color: #5a3e8a; }
+
+  .card-section p {
+    font-size: 16px;
+    line-height: 1.6;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .card-do-box {
+    background: #f0fff6;
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    border-left: 3px solid var(--emerald);
+  }
+
+  .card-do-box p { font-weight: 700; color: #0f5c2e; }
+
+  .card-not-box {
+    background: #fff5f2;
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    border-left: 3px solid var(--tangerine);
+  }
+
+  .card-not-box p { font-weight: 600; color: #8a2800; }
+
+  .card-reframe {
+    background: var(--lilac);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    font-style: italic;
+  }
+
+  .card-reframe p { color: #4a2e6e; font-weight: 600; }
+
+  /* ACTIONS ROW */
+  .card-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .btn-primary {
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: 40px;
+    padding: 13px 28px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    flex: 1;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: #151fa8;
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text-mid);
+    border: 2px solid #d0ccc7;
+    border-radius: 40px;
+    padding: 11px 22px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    border-color: var(--blue);
+    color: var(--blue);
+  }
+
+  .btn-secondary:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .no-more-resets {
+    background: #fff8f0;
+    border: 2px solid #ffd4b8;
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #8a4000;
+    margin-bottom: 20px;
+    display: none;
+  }
+
+  /* TIMER */
+  .timer-section {
+    text-align: center;
+    padding: 32px 0 8px;
+  }
+
+  .timer-ring-wrap {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 20px;
+  }
+
+  .timer-ring-wrap svg {
+    transform: rotate(-90deg);
+  }
+
+  .timer-track {
+    fill: none;
+    stroke: #ebe8e3;
+    stroke-width: 8;
+  }
+
+  .timer-progress {
+    fill: none;
+    stroke: var(--blue);
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 440;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear;
+  }
+
+  .timer-display {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--blue);
+    letter-spacing: -1px;
+  }
+
+  .timer-message {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-mid);
+    font-weight: 600;
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+
+  /* END STATE */
+  .end-section {
+    text-align: center;
+    padding: 8px 0;
+  }
+
+  .end-section h2 {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .end-section p {
+    color: var(--text-mid);
+    font-size: 15px;
+    margin-bottom: 28px;
+    font-weight: 500;
+  }
+
+  .end-btns {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-done {
+    background: var(--emerald);
+    color: #0a3d20;
+    border: none;
+    border-radius: 40px;
+    padding: 13px 32px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .btn-done:hover { background: #00c070; transform: translateY(-1px); }
+
+  .done-message {
+    background: #f0fff6;
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-top: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #0f5c2e;
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-top: 28px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-light);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    background: none;
+    border: none;
+    font-family: 'Quicksand', sans-serif;
+  }
+
+  .back-link:hover { color: var(--blue); }
+
+  /* DIVIDER */
+  .divider {
+    width: 40px;
+    height: 3px;
+    background: var(--pink);
+    border-radius: 2px;
+    margin: 32px 0;
+  }
+
+  @media (max-width: 480px) {
+    .reset-card { padding: 22px 18px; }
+    .card-actions { flex-direction: column; }
+    .btn-primary, .btn-secondary { text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <div class="logo">
+    <div class="logo-dot"></div>
+    Sewing Boss Learning Lab
+  </div>
+</div>
+
+<!-- SCREEN 1: STATE SELECTION -->
+<section class="screen active" id="screen-state">
+  <h1 class="screen-title">Lost your sewing mojo<br>or just stuck?</h1>
+  <p class="screen-sub">Pick what's actually going on. We'll reset you.</p>
+
+  <div class="state-grid" id="state-grid">
+    <button class="state-btn" data-state="stuck">I'm stuck</button>
+    <button class="state-btn" data-state="overwhelmed">I'm overwhelmed</button>
+    <button class="state-btn" data-state="overthinking">I'm overthinking</button>
+    <button class="state-btn" data-state="avoiding">I'm avoiding starting</button>
+    <button class="state-btn" data-state="momentum">I've lost momentum</button>
+    <button class="state-btn" data-state="tweaking">I keep tweaking instead of progressing</button>
+    <button class="state-btn" data-state="shiny">I want to start something new instead of finishing</button>
+    <button class="state-btn" data-state="bored">I'm bored in the middle</button>
+    <button class="state-btn" data-state="quit">I'm about to quit</button>
+    <button class="state-btn" data-state="fabric">I'm worried about wasting fabric</button>
+  </div>
+
+  <div class="pattern-notice" id="pattern-notice"></div>
+</section>
+
+<!-- SCREEN 2: CARD -->
+<section class="screen" id="screen-card">
+  <div class="card-header">
+    <span class="card-state-label" id="card-state-label"></span>
+    <span class="redraw-info" id="redraw-info"></span>
+  </div>
+
+  <div class="reset-card" id="reset-card">
+    <!-- populated by JS -->
+  </div>
+
+  <div class="no-more-resets" id="no-more-resets">
+    No more resets. Go do the step.<br>Come back in 10 minutes if you still need a reset.
+  </div>
+
+  <div class="card-actions">
+    <button class="btn-primary" id="btn-timer">Start 10-minute reset</button>
+    <button class="btn-secondary" id="btn-redraw">Try another card</button>
+  </div>
+
+  <button class="back-link" id="btn-back-state">← Different state</button>
+</section>
+
+<!-- SCREEN 3: TIMER -->
+<section class="screen" id="screen-timer">
+  <div class="reset-card" id="timer-card-echo" style="margin-bottom:28px; border-top-color: var(--emerald);">
+    <!-- echo of DO THIS -->
+  </div>
+
+  <div class="timer-section">
+    <div class="timer-ring-wrap">
+      <svg width="160" height="160" viewBox="0 0 160 160">
+        <circle class="timer-track" cx="80" cy="80" r="70"/>
+        <circle class="timer-progress" id="timer-ring" cx="80" cy="80" r="70"/>
+      </svg>
+      <div class="timer-display" id="timer-display">10:00</div>
+    </div>
+
+    <p class="timer-message">"This is where your mojo comes back.<br>Do only this step. Nothing else."</p>
+
+    <button class="btn-secondary" id="btn-stop-timer">Stop timer early</button>
+  </div>
+</section>
+
+<!-- SCREEN 4: END STATE -->
+<section class="screen" id="screen-end">
+  <div class="end-section">
+    <h2>Done or still stuck?</h2>
+    <p>Ten minutes is enough to shift things.</p>
+
+    <div class="end-btns">
+      <button class="btn-done" id="btn-done">Done ✓</button>
+      <button class="btn-secondary" id="btn-still-stuck">Still stuck</button>
+    </div>
+
+    <div class="done-message" id="done-message">
+      Good. That's how momentum builds.<br>
+      <span style="font-weight:500; font-size:14px; color:#1a7a40;">One step at a time.</span>
+    </div>
+  </div>
+
+  <button class="back-link" id="btn-full-reset">← Start over</button>
+</section>
+
+<script>
+// ─── CARD DATA ──────────────────────────────────────────────────────────────
+const cards = {
+  stuck: [
+    {
+      pattern: "You've stopped because the next step isn't obvious.",
+      reality: "It doesn't need to be. You don't need a plan right now — you need motion. Pick up the project and look at the physical thing in front of you.",
+      doThis: "Identify the one seam, edge, or piece you last touched. Touch it.",
+      notThis: "Don't look at reference images, notes, or the pattern envelope. Just the fabric in your hands.",
+    },
+    {
+      pattern: "You've convinced yourself something is wrong with the project.",
+      reality: "Maybe it is. But you won't know until you keep going. Stopping to evaluate something unfinished is a waste of your judgement.",
+      doThis: "Sew the next logical seam — not the one you're anxious about. Save that for when you have momentum.",
+      notThis: "Don't start reassessing the whole project. That's not a next step.",
+    },
+    {
+      pattern: "You're waiting to feel ready.",
+      reality: "Ready is a myth at your level. You've sewn harder things than this. The skill is already there.",
+      doThis: "Thread your machine if it isn't. Press your foot down and complete one seam.",
+      notThis: "Don't watch a tutorial. You don't need one.",
+      reframe: "Your mojo isn't gone. You've just paused.",
+    },
+    {
+      pattern: "The project feels frozen because one part feels hard.",
+      reality: "You're not stuck on the whole project. You're stuck on one part. Everything else can move.",
+      doThis: "Skip the hard part. Work on a different section of the same project for the next 10 minutes.",
+      notThis: "Don't pack the project away. Leave it open and in front of you.",
+    },
+  ],
+
+  overwhelmed: [
+    {
+      pattern: "You're carrying the whole project in your head at once.",
+      reality: "The project isn't one task. It's 20. You can only do one of them right now.",
+      doThis: "Write down exactly three next steps on paper. Do only the first one.",
+      notThis: "Don't write a full to-do list. Three steps. One action.",
+    },
+    {
+      pattern: "Too many decisions are open at the same time.",
+      reality: "Decisions cost energy. When you have too many open at once, everything stalls. Close one.",
+      doThis: "Pick the one decision that's been sitting longest — lining colour, hem method, button choice — and commit to it now. It's probably fine either way.",
+      notThis: "Don't defer it. You've been carrying it long enough.",
+    },
+    {
+      pattern: "The project has become too big in your mind.",
+      reality: "You've made this too big. Do one seam. Not the garment. One seam.",
+      doThis: "Sit down and sew the very next seam your pattern calls for. Just that one.",
+      notThis: "Don't think about the garment. Think about the seam.",
+      reframe: "Overwhelm isn't about the project — it's about how you're holding it.",
+    },
+    {
+      pattern: "You feel like you need to do everything today.",
+      reality: "You don't. You need to do something today.",
+      doThis: "Set a physical timer for 10 minutes. Sew until it goes off. Nothing more is required today.",
+      notThis: "Don't calculate how much time you need to finish. Not relevant right now.",
+    },
+  ],
+
+  overthinking: [
+    {
+      pattern: "You're solving problems that don't exist yet.",
+      reality: "Sewists get into trouble by thinking 12 steps ahead. The cutting table doesn't lie — only your imagination does.",
+      doThis: "Stop. Stitch one seam on what's in front of you, right now, exactly as the pattern directs.",
+      notThis: "Don't adjust, adapt, or improve yet. Just execute.",
+    },
+    {
+      pattern: "You're looking for the 'right' way before starting.",
+      reality: "There are three right ways. Pick one and go. You can press and assess after — not before.",
+      doThis: "Choose a method. Any method you've used before. Do it.",
+      notThis: "Don't open YouTube. Don't search Instagram. One method, yours.",
+      reframe: "You don't need your mojo back. You need the next step.",
+    },
+    {
+      pattern: "You've been planning this step for longer than it would take to just do it.",
+      reality: "Thinking feels like progress. It isn't. The fabric doesn't care about your planning.",
+      doThis: "Set down whatever you're using to plan — phone, notebook, pattern sheet. Pick up the fabric instead.",
+      notThis: "Don't think about what comes after this step.",
+    },
+    {
+      pattern: "You keep reconsidering something you've already decided.",
+      reality: "Revisiting a decision you've made is overthinking dressed up as problem-solving.",
+      doThis: "Honour your original decision. Cut it, sew it, or press it — whichever you planned first.",
+      notThis: "Don't undo anything unless a seam is actually wrong. Doubt is not a reason to unpick.",
+    },
+  ],
+
+  avoiding: [
+    {
+      pattern: "The project is out of sight.",
+      reality: "If you can't see it, you won't do it. The first step is physical proximity.",
+      doThis: "Get the project out. Lay it on your sewing table. That counts as a step today.",
+      notThis: "Don't start planning or prepping. Just get the thing out.",
+    },
+    {
+      pattern: "You're avoiding because you're worried you'll do it wrong.",
+      reality: "You might make a mistake. You'll survive it. Sewists with your background have unpicked harder things.",
+      doThis: "Do the part you're avoiding — slowly, deliberately, once.",
+      notThis: "Don't make a toile of the part you're avoiding unless it's actually a fitting issue.",
+    },
+    {
+      pattern: "You keep finding other tasks to do instead.",
+      reality: "That's avoidance with productivity as cover. Your mojo isn't the problem — resistance is.",
+      doThis: "Close everything else. Sit at your machine. Sew two seams before you leave.",
+      notThis: "Don't tidy the sewing room first. Don't press earlier pieces. Machine, seam, go.",
+    },
+    {
+      pattern: "Something went wrong last time and you haven't gone back since.",
+      reality: "The project is waiting. It's not judging you. You can fix the mistake or sew past it.",
+      doThis: "Look at the mistake. Decide in the next 2 minutes: fix it or leave it. Then keep sewing.",
+      notThis: "Don't restart the whole project. One problem, one decision.",
+      reframe: "Starting again is still starting.",
+    },
+  ],
+
+  momentum: [
+    {
+      pattern: "You've had a gap and now the project feels foreign.",
+      reality: "Pick it up. Give yourself 5 minutes of re-orientation. That's it.",
+      doThis: "Look at where you stopped. Find the last seam. Press it. Then sew the next one.",
+      notThis: "Don't re-read the whole pattern from the beginning.",
+    },
+    {
+      pattern: "You built momentum before and lost it — now it feels like starting from zero.",
+      reality: "It's not. You have half a garment made. That's not nothing.",
+      doThis: "Pick up where you left off. Sew the next seam in the sequence — even if it's just a short one.",
+      notThis: "Don't assess quality right now. Momentum first, critique later.",
+      reframe: "Your mojo isn't gone. You've just paused.",
+    },
+    {
+      pattern: "Life interrupted and now sewing feels low priority.",
+      reality: "That's fine. It's still here when you come back. Ten minutes is enough to re-establish a connection.",
+      doThis: "Iron the next piece that needs it. That counts. That's re-entry.",
+      notThis: "Don't wait for a full sewing session. Ten minutes is real.",
+    },
+    {
+      pattern: "You're waiting for a big block of time before you'll start.",
+      reality: "Big blocks don't come. Small moves compound. A sleeve cap basted while the kettle boils is still a sleeve cap basted.",
+      doThis: "Do the smallest thing the project needs right now. One. Small. Thing.",
+      notThis: "Don't wait for the weekend. Do one thing now.",
+    },
+  ],
+
+  tweaking: [
+    {
+      pattern: "You're adjusting instead of progressing.",
+      reality: "Tweaking is disguised stalling. At some point the adjustment becomes the avoidance.",
+      doThis: "Declare the adjustment done. Move to the next construction step.",
+      notThis: "No more adjustments until the next fitting. Sew forward.",
+    },
+    {
+      pattern: "You're refitting something that was already acceptable.",
+      reality: "Acceptable is enough to keep going. Perfect garments don't exist. Finished garments do.",
+      doThis: "Mark the original fit line clearly, put the pins away, and sew the next seam.",
+      notThis: "Don't take the garment apart. Not yet. Finish it first.",
+    },
+    {
+      pattern: "You keep opening the seam and re-sewing.",
+      reality: "If it's structurally sound and visually acceptable at two feet, move on.",
+      doThis: "Close the seam. Press it. Walk away from it.",
+      notThis: "No more unpicking that seam today.",
+      reframe: "Done with a small imperfection beats perfect and unfinished, every time.",
+    },
+    {
+      pattern: "You're experimenting when you should be executing.",
+      reality: "Experimentation has its time. Right now you have a garment to finish.",
+      doThis: "Return to the original construction method your pattern called for. Follow it.",
+      notThis: "Don't try a new technique on this garment. Save it for the next one.",
+    },
+  ],
+
+  shiny: [
+    {
+      pattern: "A new project is calling louder than the current one.",
+      reality: "The new project is exciting because it's imaginary. This one is real and needs finishing.",
+      doThis: "Write down the new idea so it doesn't disappear. Then close that notebook and sew the current project for 10 minutes.",
+      notThis: "Don't cut anything for the new project until this one is done.",
+    },
+    {
+      pattern: "You've lost interest in the current project.",
+      reality: "Interest comes and goes. Skill and follow-through don't depend on interest.",
+      doThis: "Do the next mechanical step — hem, understitch, attach facing. You don't need to love it right now.",
+      notThis: "Don't reassess whether you still want to finish it. Decide that after it's done.",
+    },
+    {
+      pattern: "The new project feels urgent.",
+      reality: "It isn't. You've been sewing long enough to know the urgency fades once it's cut.",
+      doThis: "Sew to a natural pause point on the current project — end of a seam sequence, completion of a section.",
+      notThis: "Don't cut into new fabric today.",
+    },
+    {
+      pattern: "You've started new projects before to escape this feeling.",
+      reality: "And you have unfinished projects to show for it. That's the pattern. This is where you break it.",
+      doThis: "Do one complete step on the current project. Not a partial step. A full one.",
+      notThis: "Don't open the new pattern envelope.",
+      reframe: "You don't need a new project. You need a finished one.",
+    },
+  ],
+
+  bored: [
+    {
+      pattern: "You're in the slow middle — construction is competent but dull.",
+      reality: "This is normal. Every garment has a boring phase. It doesn't mean the project is wrong.",
+      doThis: "Set a timer and sew to music or a podcast. Get through the boring part.",
+      notThis: "Don't change anything about the design to make it more interesting.",
+    },
+    {
+      pattern: "The repetitive work feels pointless.",
+      reality: "The repetitive work is what makes the garment. Basting, pressing, clipping — this is the job.",
+      doThis: "Do the next boring task with full attention. Not mindlessly. Carefully.",
+      notThis: "Don't skip steps because they feel tedious.",
+    },
+    {
+      pattern: "You're bored because there's no problem to solve.",
+      reality: "Smooth sailing is the goal. Enjoy it briefly, then keep going.",
+      doThis: "Batch the boring work. Set up the next three seams and sew them one after another.",
+      notThis: "Don't invent complications to make it interesting.",
+      reframe: "Boring and progressing is better than interesting and stuck.",
+    },
+    {
+      pattern: "You've sewn this type of thing before and it's not teaching you anything new.",
+      reality: "Reinforcing solid technique has value. Not every project needs to stretch you.",
+      doThis: "Focus on doing it exceptionally — press harder, clip more precisely, stitch more consistently.",
+      notThis: "Don't rush because it's familiar.",
+    },
+  ],
+
+  quit: [
+    {
+      pattern: "You're about to stop because the effort feels disproportionate to the result.",
+      reality: "You've already invested time and fabric. Finishing it costs less than you think.",
+      doThis: "Don't quit today. Sew for 10 minutes. Quit tomorrow if you still want to.",
+      notThis: "Don't put it in the donate pile yet.",
+    },
+    {
+      pattern: "Something went wrong and the project feels ruined.",
+      reality: "Is it structurally unsound? Is the mistake actually visible when worn? Be honest.",
+      doThis: "Look at the mistake once, clearly, and decide: fix, live with it, or actually stop. Make the call now.",
+      notThis: "Don't keep sewing in avoidance of making the decision.",
+    },
+    {
+      pattern: "You're frustrated, and frustration is masking quitting.",
+      reality: "Step away for 20 minutes. Come back and look at it with different eyes.",
+      doThis: "Leave the workroom. Do something physical. Come back in 20 minutes before you decide anything.",
+      notThis: "Don't make permanent decisions while you're frustrated.",
+      reframe: "Frustration is not a signal that you're done. It's a signal that you're close.",
+    },
+    {
+      pattern: "You've decided this garment will never look right.",
+      reality: "Unfinished garments never look right. Finished garments can be assessed.",
+      doThis: "Finish the construction. All of it. Then assess.",
+      notThis: "Don't judge the garment until it's complete and pressed.",
+    },
+  ],
+
+  fabric: [
+    {
+      pattern: "Fear of ruining the fabric is keeping you from cutting.",
+      reality: "Fabric that sits uncut serves no one. An imperfect garment still gets worn.",
+      doThis: "Re-check your layout, confirm grain lines, and cut one piece. Start there.",
+      notThis: "Don't keep moving the pattern pieces around. Confirm and cut.",
+    },
+    {
+      pattern: "You've convinced yourself this fabric is too precious to risk.",
+      reality: "You bought it to use it. Your skills are adequate for this fabric — otherwise you wouldn't have bought it.",
+      doThis: "Cut a test scrap and sew a short seam to feel the fabric. Then continue cutting.",
+      notThis: "Don't source a substitute fabric. Use what you have.",
+    },
+    {
+      pattern: "You're second-guessing whether this fabric is right for the pattern.",
+      reality: "You made that decision already. Trust it. The time for that decision has passed.",
+      doThis: "Cut the first pattern piece. You can adjust as you go if needed.",
+      notThis: "Don't do a fabric swap without actually stitching a seam first.",
+    },
+    {
+      pattern: "You're afraid of making a mistake on expensive fabric.",
+      reality: "The more you delay, the larger the mistake feels in your imagination. Reality is almost always less catastrophic.",
+      doThis: "Cut the smallest pattern piece first. Build confidence, then move to the main pieces.",
+      notThis: "Don't delay by making a muslin unless you genuinely need to fit-test. You probably don't.",
+      reframe: "Careful and deliberate beats paralysed every time.",
+    },
+  ],
+};
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let currentState = null;
+let currentCards = [];
+let currentCardIndex = 0;
+let redrawsUsed = 0;
+const MAX_REDRAWS = 2;
+let timerInterval = null;
+let sessionSelections = [];
+let currentDoThis = '';
+
+const stateLabels = {
+  stuck: "I'm stuck",
+  overwhelmed: "I'm overwhelmed",
+  overthinking: "I'm overthinking",
+  avoiding: "I'm avoiding starting",
+  momentum: "I've lost momentum",
+  tweaking: "I keep tweaking",
+  shiny: "I want to start something new",
+  bored: "I'm bored in the middle",
+  quit: "I'm about to quit",
+  fabric: "I'm worried about wasting fabric",
+};
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function renderCard(card) {
+  const reframeHtml = card.reframe
+    ? `<div class="card-section">
+        <div class="card-label label-reframe">Remember</div>
+        <div class="card-reframe"><p>${card.reframe}</p></div>
+       </div>`
+    : '';
+
+  return `
+    <div class="card-section">
+      <div class="card-label label-pattern">Pattern</div>
+      <p>${card.pattern}</p>
+    </div>
+    <div class="card-section">
+      <div class="card-label label-reality">Reality check</div>
+      <p>${card.reality}</p>
+    </div>
+    <div class="card-section">
+      <div class="card-label label-do">Do this</div>
+      <div class="card-do-box"><p>${card.doThis}</p></div>
+    </div>
+    <div class="card-section">
+      <div class="card-label label-not">Not this</div>
+      <div class="card-not-box"><p>${card.notThis}</p></div>
+    </div>
+    ${reframeHtml}
+  `;
+}
+
+function checkPatterns() {
+  const counts = {};
+  sessionSelections.forEach(s => { counts[s] = (counts[s] || 0) + 1; });
+  const notice = document.getElementById('pattern-notice');
+  let msg = '';
+  for (const [state, count] of Object.entries(counts)) {
+    if (count >= 2) {
+      const label = stateLabels[state] || state;
+      msg = `You've selected "${label}" ${count} times this session. This might be your default pattern.`;
+      break;
+    }
+    if (sessionSelections.length >= 3 && state === 'overthinking') {
+      msg = `You've visited this tool a few times. Worth noticing: coming back is sometimes its own form of delay.`;
+      break;
+    }
+  }
+  if (msg) {
+    notice.textContent = msg;
+    notice.style.display = 'block';
+  } else {
+    notice.style.display = 'none';
+  }
+}
+
+// ─── EVENT: STATE SELECTION ───────────────────────────────────────────────────
+document.querySelectorAll('.state-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentState = btn.dataset.state;
+    sessionSelections.push(currentState);
+
+    document.querySelectorAll('.state-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+
+    checkPatterns();
+
+    // setup cards
+    currentCards = shuffle(cards[currentState]);
+    currentCardIndex = 0;
+    redrawsUsed = 0;
+
+    // render
+    document.getElementById('card-state-label').textContent = stateLabels[currentState];
+    const cardEl = document.getElementById('reset-card');
+    cardEl.innerHTML = renderCard(currentCards[0]);
+
+    const noMore = document.getElementById('no-more-resets');
+    noMore.style.display = 'none';
+
+    const redrawBtn = document.getElementById('btn-redraw');
+    redrawBtn.disabled = false;
+    redrawBtn.textContent = 'Try another card';
+
+    updateRedrawInfo();
+    currentDoThis = currentCards[0].doThis;
+
+    setTimeout(() => showScreen('screen-card'), 80);
+  });
+});
+
+function updateRedrawInfo() {
+  const remaining = MAX_REDRAWS - redrawsUsed;
+  const el = document.getElementById('redraw-info');
+  el.textContent = remaining > 0 ? `${remaining} redraw${remaining !== 1 ? 's' : ''} left` : 'No redraws left';
+}
+
+// ─── EVENT: REDRAW ────────────────────────────────────────────────────────────
+document.getElementById('btn-redraw').addEventListener('click', () => {
+  if (redrawsUsed >= MAX_REDRAWS) return;
+
+  redrawsUsed++;
+  currentCardIndex = (currentCardIndex + 1) % currentCards.length;
+
+  const card = currentCards[currentCardIndex];
+  const cardEl = document.getElementById('reset-card');
+  // re-trigger animation
+  cardEl.style.animation = 'none';
+  cardEl.offsetHeight;
+  cardEl.style.animation = '';
+  cardEl.innerHTML = renderCard(card);
+  currentDoThis = card.doThis;
+
+  updateRedrawInfo();
+
+  if (redrawsUsed >= MAX_REDRAWS) {
+    document.getElementById('btn-redraw').disabled = true;
+    document.getElementById('btn-redraw').textContent = 'No redraws left';
+    document.getElementById('no-more-resets').style.display = 'block';
+  }
+});
+
+// ─── EVENT: START TIMER ────────────────────────────────────────────────────────
+document.getElementById('btn-timer').addEventListener('click', () => {
+  // echo the DO THIS in the timer screen
+  const echo = document.getElementById('timer-card-echo');
+  echo.innerHTML = `
+    <div class="card-section" style="margin-bottom:0">
+      <div class="card-label label-do">Your step</div>
+      <div class="card-do-box"><p>${currentDoThis}</p></div>
+    </div>
+  `;
+
+  startTimer(10 * 60);
+  showScreen('screen-timer');
+});
+
+function startTimer(seconds) {
+  clearInterval(timerInterval);
+  let remaining = seconds;
+  const ring = document.getElementById('timer-ring');
+  const display = document.getElementById('timer-display');
+  const circumference = 440;
+
+  function update() {
+    const mins = Math.floor(remaining / 60);
+    const secs = remaining % 60;
+    display.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+    const offset = circumference - (remaining / seconds) * circumference;
+    ring.style.strokeDashoffset = offset;
+    if (remaining <= 0) {
+      clearInterval(timerInterval);
+      showScreen('screen-end');
+    }
+  }
+
+  update();
+  timerInterval = setInterval(() => { remaining--; update(); }, 1000);
+}
+
+document.getElementById('btn-stop-timer').addEventListener('click', () => {
+  clearInterval(timerInterval);
+  showScreen('screen-end');
+});
+
+// ─── EVENT: END STATE ─────────────────────────────────────────────────────────
+document.getElementById('btn-done').addEventListener('click', () => {
+  document.getElementById('done-message').style.display = 'block';
+  document.getElementById('btn-done').disabled = true;
+});
+
+document.getElementById('btn-still-stuck').addEventListener('click', () => {
+  showScreen('screen-state');
+});
+
+document.getElementById('btn-full-reset').addEventListener('click', () => {
+  clearInterval(timerInterval);
+  document.querySelectorAll('.state-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('pattern-notice').style.display = 'none';
+  document.getElementById('done-message').style.display = 'none';
+  document.getElementById('btn-done').disabled = false;
+  showScreen('screen-state');
+});
+
+document.getElementById('btn-back-state').addEventListener('click', () => {
+  clearInterval(timerInterval);
+  document.querySelectorAll('.state-btn').forEach(b => b.classList.remove('selected'));
+  showScreen('screen-state');
+});
+</script>
+</body>
+</html>
